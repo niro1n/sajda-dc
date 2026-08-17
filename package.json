@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "deploy": "node src/deploy.js"
+    "deploy": "node src/deploy.js",
+    "watch:commands": "node scripts/dev.js",
+    "start:watch": "nodemon src/index.js",
+    "dev": "concurrently \"npm run start:watch\" \"npm run watch:commands\""
   },
   "keywords": [],
   "author": "",
@@ -16,5 +19,10 @@
     "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "node-cron": "^4.6.0"
+  },
+  "devDependencies": {
+    "chokidar": "^5.0.0",
+    "concurrently": "^10.0.5",
+    "nodemon": "^3.1.14"
   }
 }

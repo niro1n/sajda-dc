@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-const fs = require("node:fs");
 const path = require("node:path");
+const { getCommandFiles } = require("./utils/commandLoader");
 
 const { Client, GatewayIntentBits, Events, Collection } = require("discord.js");
 
@@ -13,12 +13,9 @@ client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
 
-const commandFiles = fs
-  .readdirSync(commandsPath)
-  .filter((file) => file.endsWith(".js"));
+const commandFiles = getCommandFiles(commandsPath);
 
-for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
+for (const filePath of commandFiles) {
   const command = require(filePath);
 
   if ("data" in command && "execute" in command) {
@@ -34,6 +31,16 @@ for (const file of commandFiles) {
 
 client.once(Events.ClientReady, (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
+
+  c.user.setPresence({
+    activities: [
+      {
+        name: "/help - Your prayer times",
+        type: 3,
+      },
+    ],
+    status: "online",
+  });
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

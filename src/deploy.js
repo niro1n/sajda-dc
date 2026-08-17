@@ -1,19 +1,16 @@
 require("dotenv").config();
 
-const { REST, Routes } = require("discord.js");
-
-const fs = require("node:fs");
 const path = require("node:path");
+
+const { REST, Routes } = require("discord.js");
+const { getCommandFiles } = require("./utils/commandLoader");
 
 const commands = [];
 
 const commandsPath = path.join(__dirname, "commands");
-const commandFiles = fs
-  .readdirSync(commandsPath)
-  .filter((file) => file.endsWith(".js"));
+const commandFiles = getCommandFiles(commandsPath);
 
-for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
+for (const filePath of commandFiles) {
   const command = require(filePath);
 
   if ("data" in command && "execute" in command) {
@@ -40,8 +37,11 @@ const rest = new REST({
         process.env.DISCORD_CLIENT_ID,
         process.env.DISCORD_GUILD_ID,
       ),
-      { body: commands },
+      {
+        body: commands,
+      },
     );
+
     console.log(
       `Successfully reloaded ${commands.length} application (/) commands.`,
     );
