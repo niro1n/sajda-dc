@@ -60,12 +60,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     if (interaction.replied || interaction.deferred) {
       await interaction.followUp({
-        content: "Terjadi kesalahan saat menjalankan command!",
+        content: "An error occurred while executing the command!",
         ephemeral: true,
       });
     } else {
       await interaction.reply({
-        content: "Terjadi kesalahan saat menjalankan command!",
+        content: "An error occurred while executing the command!",
         ephemeral: true,
       });
     }
