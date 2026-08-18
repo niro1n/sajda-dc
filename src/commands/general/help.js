@@ -10,23 +10,15 @@ module.exports = {
       .setColor("#00BB97")
       .setTitle("COMMAND LIST")
       .setDescription("Here are the available commands:")
-      .addFields(
-        {
-          name: "🌐 - GENERAL",
-          value: [
-            "`/help` - Provides information about the available commands.",
-            "`/ping` - Tests the bot latency.",
-            "`/salam` - Greets with a salam.",
-          ].join("\n"),
-        },
-        {
-          name: "🕌 - PRAYER",
-          value: [
-            "`/sajda status` - Displays the current status of SAJDA.",
-            "`/sajda times` - Displays prayer times for a specific location.",
-          ].join("\n"),
-        },
-      )
+      .addFields({
+        name: "GENERAL",
+        value: [
+          "`/about` - Provides information about the bot.",
+          "`/help` - Provides information about the available commands.",
+          "`/ping` - Tests the bot latency.",
+          "`/salam` - Greets with a salam.",
+        ].join("\n"),
+      })
       .setFooter({
         text: "SAJDA - Your Prayer Times",
         iconURL: "https://imgur.com/LGjFKad.jpg",
