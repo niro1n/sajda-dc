@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { getPrayerTimes } = require("../../services/prayerService");
+const { getRandomContent } = require("../../services/contentService");
 const { getCurrentDate, getCurrentDateTime } = require("../../utils/dateTime");
 const { getLocationByPlaceId } = require("../../services/locationService");
 const {
@@ -60,7 +61,10 @@ async function executeNext(interaction) {
   await interaction.deferReply();
 
   try {
-    const data = await getPrayerTimes(location, getCurrentDate());
+    const [data, content] = await Promise.all([
+      getPrayerTimes(location, getCurrentDate()),
+      getRandomContent(),
+    ]);
     const currentTime = getCurrentDateTime(data.timezone);
     const nextPrayer = findNextPrayer(data.prayers, currentTime);
 
@@ -69,6 +73,10 @@ async function executeNext(interaction) {
       currentTime,
       nextPrayer.isTomorrow,
     );
+
+    const contentText = content.reference
+      ? `> ${content.content}\n> — **${content.source}**, ${content.reference}`
+      : `> ${content.content}\n> — **${content.source}**`;
 
     const remaining = formatRemainingTime(minutesRemaining);
     const dayLabel = nextPrayer.isTomorrow ? "Tomorrow" : "Today";
@@ -81,11 +89,17 @@ async function executeNext(interaction) {
         `📍 **${data.location}**\n` +
           `📅 ${dayLabel}, ${currentTime.date}  •  🌐 ${data.timezone}`,
       )
-      .addFields({
-        name: `${nextPrayer.emoji}  ${nextPrayer.name}`,
-        value: `\`${nextPrayer.time}\`\n⏳ in ${remaining}`,
-        inline: false,
-      })
+      .addFields(
+        {
+          name: `${nextPrayer.emoji}  ${nextPrayer.name}`,
+          value: `\`${nextPrayer.time}\`\n⏳ in ${remaining}`,
+          inline: false,
+        },
+        {
+          name: "Islamic Reminder",
+          value: contentText,
+        },
+      )
       .setFooter(createBrandFooter("SAJDA • Islamic Discord Assistant"))
       .setTimestamp();
 

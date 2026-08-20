@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { getPrayerTimes } = require("../../services/prayerService");
+const { getRandomContent } = require("../../services/contentService");
 const { getCurrentDate } = require("../../utils/dateTime");
 const { getLocationByPlaceId } = require("../../services/locationService");
 const {
@@ -23,13 +24,20 @@ async function executeTimes(interaction) {
 
   try {
     const location = await getLocationByPlaceId(placeId);
-    const data = await getPrayerTimes(location, getCurrentDate());
+    const [data, content] = await Promise.all([
+      getPrayerTimes(location, getCurrentDate()),
+      getRandomContent(),
+    ]);
 
     const prayerFields = PRAYERS.map(({ key, name, emoji }) => ({
       name: `${emoji}  ${name}`,
       value: `\`${data.prayers[key]}\``,
       inline: true,
     }));
+
+    const contentText = content.reference
+      ? `> ${content.content}\n> — **${content.source}**, ${content.reference}`
+      : `> ${content.content}\n> — **${content.source}**`;
 
     const embed = new EmbedBuilder()
       .setColor(BRAND_COLOR)
@@ -38,7 +46,10 @@ async function executeTimes(interaction) {
       .setDescription(
         `📍 **${data.location}**\n` + `📅 ${data.date}  •  🌐 ${data.timezone}`,
       )
-      .addFields(...prayerFields)
+      .addFields(...prayerFields, {
+        name: "Islamic Reminder",
+        value: contentText,
+      })
       .setFooter(createBrandFooter("SAJDA • Islamic Discord Assistant"))
       .setTimestamp();
 
