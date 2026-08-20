@@ -5,6 +5,11 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
+const {
+  BRAND_COLOR,
+  BRAND_ICON,
+  createBrandFooter,
+} = require("../../config/brand");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,9 +18,9 @@ module.exports = {
 
   async execute(interaction) {
     const aboutEmbed = new EmbedBuilder()
-      .setColor("#00BB97")
+      .setColor(BRAND_COLOR)
       .setTitle("ABOUT SAJDA")
-      .setThumbnail("https://imgur.com/LGjFKad.jpg")
+      .setThumbnail(BRAND_ICON)
       .setDescription(
         "A modern Islamic assistant built for Discord communities, providing useful and meaningful tools for everyday community life.",
       )
@@ -28,10 +33,7 @@ module.exports = {
         { name: "VERSION", value: "1.0.0", inline: true },
         { name: "DEVELOPER", value: "Niro", inline: true },
       )
-      .setFooter({
-        text: "SAJDA • Islamic Discord Assistant",
-        iconURL: "https://imgur.com/LGjFKad.jpg",
-      })
+      .setFooter(createBrandFooter("SAJDA - Islamic Discord Assistant"))
       .setTimestamp();
 
     const row = new ActionRowBuilder().addComponents(

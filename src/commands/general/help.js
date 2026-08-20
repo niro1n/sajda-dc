@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { BRAND_COLOR, createBrandFooter } = require("../../config/brand");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -7,7 +8,7 @@ module.exports = {
 
   async execute(interaction) {
     const helpEmbed = new EmbedBuilder()
-      .setColor("#00BB97")
+      .setColor(BRAND_COLOR)
       .setTitle("COMMAND LIST")
       .setDescription("Here are the available commands:")
       .addFields({
@@ -19,10 +20,7 @@ module.exports = {
           "`/salam` - Greets with a salam.",
         ].join("\n"),
       })
-      .setFooter({
-        text: "SAJDA • Islamic Discord Assistant",
-        iconURL: "https://imgur.com/LGjFKad.jpg",
-      })
+      .setFooter(createBrandFooter("SAJDA - Your Prayer Times"))
       .setTimestamp();
 
     await interaction.reply({

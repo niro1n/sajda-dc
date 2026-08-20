@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { BRAND_COLOR, createBrandFooter } = require("../../config/brand");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -7,13 +8,10 @@ module.exports = {
 
   async execute(interaction) {
     const pingEmbed = new EmbedBuilder()
-      .setColor("#00BB97")
+      .setColor(BRAND_COLOR)
       .setTitle("🏓 - PONG!")
       .setDescription(`Latency: ${Date.now() - interaction.createdTimestamp}ms`)
-      .setFooter({
-        text: "SAJDA • Islamic Discord Assistant",
-        iconURL: "https://imgur.com/LGjFKad.jpg",
-      })
+      .setFooter(createBrandFooter("SAJDA - Your Prayer Times"))
       .setTimestamp();
 
     await interaction.reply({
