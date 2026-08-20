@@ -3,6 +3,7 @@ const { getPrayerTimes } = require("../../services/prayerService");
 const { getRandomContent } = require("../../services/contentService");
 const { getCurrentDate, getCurrentDateTime } = require("../../utils/dateTime");
 const { getLocationByPlaceId } = require("../../services/locationService");
+
 const {
   BRAND_COLOR,
   BRAND_ICON,
@@ -10,11 +11,11 @@ const {
 } = require("../../config/brand");
 
 const PRAYERS = [
-  { key: "Fajr", name: "Fajr", emoji: "🌅" },
-  { key: "Dhuhr", name: "Dhuhr", emoji: "☀️" },
-  { key: "Asr", name: "Asr", emoji: "🌤️" },
-  { key: "Maghrib", name: "Maghrib", emoji: "🌇" },
-  { key: "Isha", name: "Isha", emoji: "🌙" },
+  { key: "Fajr", name: "FAJR", emoji: "🌅" },
+  { key: "Dhuhr", name: "DHUHR", emoji: "☀️" },
+  { key: "Asr", name: "ASR", emoji: "🌤️" },
+  { key: "Maghrib", name: "MAGHRIB", emoji: "🌇" },
+  { key: "Isha", name: "ISHA", emoji: "🌙" },
 ];
 
 function findNextPrayer(prayers, currentTime) {
@@ -25,11 +26,19 @@ function findNextPrayer(prayers, currentTime) {
     const prayerMinutes = hour * 60 + minute;
 
     if (prayerMinutes > currentMinutes) {
-      return { ...prayer, time: prayers[prayer.key], isTomorrow: false };
+      return {
+        ...prayer,
+        time: prayers[prayer.key],
+        isTomorrow: false,
+      };
     }
   }
 
-  return { ...PRAYERS[0], time: prayers[PRAYERS[0].key], isTomorrow: true };
+  return {
+    ...PRAYERS[0],
+    time: prayers[PRAYERS[0].key],
+    isTomorrow: true,
+  };
 }
 
 function getMinutesUntilPrayer(prayerTime, currentTime, isTomorrow) {
@@ -48,19 +57,27 @@ function formatRemainingTime(totalMinutes) {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  if (hours === 0) return `${minutes} minutes`;
-  if (minutes === 0) return `${hours} hours`;
+  if (hours === 0) {
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+  }
 
-  return `${hours} hours ${minutes} minutes`;
+  if (minutes === 0) {
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  }
+
+  const hourText = hours === 1 ? "hour" : "hours";
+  const minuteText = minutes === 1 ? "minute" : "minutes";
+
+  return `${hours} ${hourText} ${minutes} ${minuteText}`;
 }
 
 async function executeNext(interaction) {
   const placeId = interaction.options.getString("location");
-  const location = await getLocationByPlaceId(placeId);
 
   await interaction.deferReply();
 
   try {
+    const location = await getLocationByPlaceId(placeId);
     const [data, content] = await Promise.all([
       getPrayerTimes(location, getCurrentDate()),
       getRandomContent(),
@@ -73,42 +90,46 @@ async function executeNext(interaction) {
       currentTime,
       nextPrayer.isTomorrow,
     );
+    const remaining = formatRemainingTime(minutesRemaining);
 
     const contentText = content.reference
       ? `> ${content.content}\n> — **${content.source}**, ${content.reference}`
       : `> ${content.content}\n> — **${content.source}**`;
 
-    const remaining = formatRemainingTime(minutesRemaining);
-    const dayLabel = nextPrayer.isTomorrow ? "Tomorrow" : "Today";
+    const dateLabel = nextPrayer.isTomorrow
+      ? `Tomorrow, ${currentTime.date}`
+      : currentTime.date;
 
     const embed = new EmbedBuilder()
       .setColor(BRAND_COLOR)
-      .setTitle("🕌 Next Prayer")
+      .setTitle("🕌 NEXT PRAYER")
       .setThumbnail(BRAND_ICON)
       .setDescription(
-        `📍 **${data.location}**\n` +
-          `📅 ${dayLabel}, ${currentTime.date}  •  🌐 ${data.timezone}`,
+        `📍 **${data.location}**\n` + `📅 ${dateLabel}  •  🌐 ${data.timezone}`,
       )
       .addFields(
         {
           name: `${nextPrayer.emoji}  ${nextPrayer.name}`,
-          value: `\`${nextPrayer.time}\`\n⏳ in ${remaining}`,
+          value: `\`${nextPrayer.time}\`\n⏳ \`${remaining}\``,
           inline: false,
         },
         {
-          name: "Islamic Reminder",
+          name: "ISLAMIC REMINDER",
           value: contentText,
+          inline: false,
         },
       )
       .setFooter(createBrandFooter("SAJDA • Islamic Discord Assistant"))
       .setTimestamp();
 
-    await interaction.editReply({ embeds: [embed] });
+    await interaction.editReply({
+      embeds: [embed],
+    });
   } catch (error) {
     console.error("Error fetching next prayer time:", error);
 
     await interaction.editReply({
-      content: "Failed to fetch next prayer time.",
+      content: "Failed to fetch next prayer time for that location.",
     });
   }
 }
