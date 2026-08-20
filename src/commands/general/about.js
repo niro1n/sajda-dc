@@ -29,7 +29,7 @@ module.exports = {
         { name: "DEVELOPER", value: "Niro", inline: true },
       )
       .setFooter({
-        text: "SAJDA - Islamic Discord Assistant",
+        text: "SAJDA • Islamic Discord Assistant",
         iconURL: "https://imgur.com/LGjFKad.jpg",
       })
       .setTimestamp();
