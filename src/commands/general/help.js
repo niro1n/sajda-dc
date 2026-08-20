@@ -20,7 +20,7 @@ module.exports = {
         ].join("\n"),
       })
       .setFooter({
-        text: "SAJDA - Your Prayer Times",
+        text: "SAJDA • Islamic Discord Assistant",
         iconURL: "https://imgur.com/LGjFKad.jpg",
       })
       .setTimestamp();

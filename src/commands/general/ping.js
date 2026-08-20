@@ -11,7 +11,7 @@ module.exports = {
       .setTitle("🏓 - PONG!")
       .setDescription(`Latency: ${Date.now() - interaction.createdTimestamp}ms`)
       .setFooter({
-        text: "SAJDA - Your Prayer Times",
+        text: "SAJDA • Islamic Discord Assistant",
         iconURL: "https://imgur.com/LGjFKad.jpg",
       })
       .setTimestamp();
