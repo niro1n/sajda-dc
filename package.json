@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "deploy": "node src/deploy.js",
+    "test" : "vitest run",
+    "test:watch": "vitest",
     "watch:commands": "node scripts/dev.js",
     "start:watch": "nodemon src/index.js",
     "dev": "concurrently \"npm run start:watch\" \"npm run watch:commands\""
@@ -23,6 +25,7 @@
   "devDependencies": {
     "chokidar": "^5.0.0",
     "concurrently": "^10.0.5",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "vitest": "^4.1.11"
   }
 }
