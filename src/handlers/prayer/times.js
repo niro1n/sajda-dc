@@ -3,6 +3,7 @@ const { getPrayerTimes } = require("../../services/prayerService");
 const { getRandomContent } = require("../../services/contentService");
 const { getCurrentDate } = require("../../utils/dateTime");
 const { getLocationByPlaceId } = require("../../services/locationService");
+
 const {
   BRAND_COLOR,
   BRAND_ICON,
@@ -10,11 +11,11 @@ const {
 } = require("../../config/brand");
 
 const PRAYERS = [
-  { key: "Fajr", name: "Fajr", emoji: "🌅" },
-  { key: "Dhuhr", name: "Dhuhr", emoji: "☀️" },
-  { key: "Asr", name: "Asr", emoji: "🌤️" },
-  { key: "Maghrib", name: "Maghrib", emoji: "🌇" },
-  { key: "Isha", name: "Isha", emoji: "🌙" },
+  { key: "Fajr", name: "FAJR", emoji: "🌅" },
+  { key: "Dhuhr", name: "DHUHR", emoji: "☀️" },
+  { key: "Asr", name: "ASR", emoji: "🌤️" },
+  { key: "Maghrib", name: "MAGHRIB", emoji: "🌇" },
+  { key: "Isha", name: "ISHA", emoji: "🌙" },
 ];
 
 async function executeTimes(interaction) {
@@ -41,14 +42,15 @@ async function executeTimes(interaction) {
 
     const embed = new EmbedBuilder()
       .setColor(BRAND_COLOR)
-      .setTitle("🕌 Prayer Times")
+      .setTitle("🕌 PRAYER TIMES")
       .setThumbnail(BRAND_ICON)
       .setDescription(
         `📍 **${data.location}**\n` + `📅 ${data.date}  •  🌐 ${data.timezone}`,
       )
       .addFields(...prayerFields, {
-        name: "Islamic Reminder",
+        name: "ISLAMIC REMINDER",
         value: contentText,
+        inline: false,
       })
       .setFooter(createBrandFooter("SAJDA • Islamic Discord Assistant"))
       .setTimestamp();

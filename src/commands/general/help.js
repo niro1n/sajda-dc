@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+
 const { BRAND_COLOR, createBrandFooter } = require("../../config/brand");
 
 module.exports = {
@@ -11,6 +12,8 @@ module.exports = {
       .setColor(BRAND_COLOR)
       .setTitle("COMMAND LIST")
       .setDescription("Here are the available commands:")
+
+      // general commands
       .addFields({
         name: "GENERAL",
         value: [
@@ -20,6 +23,16 @@ module.exports = {
           "`/salam` - Greets with a salam.",
         ].join("\n"),
       })
+
+      // prayer commands
+      .addFields({
+        name: "PRAYER",
+        value: [
+          "`/prayer times` - Displays today's prayer times.",
+          "`/prayer next` - Displays the next prayer time.",
+        ].join("\n"),
+      })
+
       .setFooter(createBrandFooter("SAJDA - Your Prayer Times"))
       .setTimestamp();
 
