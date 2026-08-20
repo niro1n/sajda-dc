@@ -1,12 +1,13 @@
 const axios = require("axios");
 
-const API_URL = "https://api.aladhan.com/v1/timingsByAddress";
+const API_URL = "https://api.aladhan.com/v1/timings";
 
-async function getPrayerTimes(address, date) {
+async function getPrayerTimes(location, date) {
   try {
     const response = await axios.get(`${API_URL}/${date}`, {
       params: {
-        address: address,
+        latitude: location.lat,
+        longitude: location.lon,
         method: 20,
       },
       timeout: 5000,
@@ -19,7 +20,7 @@ async function getPrayerTimes(address, date) {
     const data = response.data.data;
 
     return {
-      location: address,
+      location: location.displayName,
       date: data.date.readable,
       timezone: data.meta.timezone,
       prayers: {
