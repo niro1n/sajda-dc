@@ -30,11 +30,10 @@ async function executeTimes(interaction) {
       getRandomContent(),
     ]);
 
-    const prayerFields = PRAYERS.map(({ key, name, emoji }) => ({
-      name: `${emoji}  ${name}`,
-      value: `\`${data.prayers[key]}\``,
-      inline: true,
-    }));
+    const prayerSchedule = PRAYERS.map(
+      ({ key, name, emoji }) =>
+        `${emoji}  **${name}**  \`${data.prayers[key]}\``,
+    ).join("\n");
 
     const contentText = content.reference
       ? `> ${content.content}\n> — **${content.source}**, ${content.reference}`
@@ -47,11 +46,18 @@ async function executeTimes(interaction) {
       .setDescription(
         `📍 **${data.location}**\n` + `📅 ${data.date}  •  🌐 ${data.timezone}`,
       )
-      .addFields(...prayerFields, {
-        name: "ISLAMIC REMINDER",
-        value: contentText,
-        inline: false,
-      })
+      .addFields(
+        {
+          name: "PRAYER SCHEDULE",
+          value: prayerSchedule,
+          inline: false,
+        },
+        {
+          name: "ISLAMIC REMINDER",
+          value: contentText,
+          inline: false,
+        },
+      )
       .setFooter(createBrandFooter("SAJDA • Islamic Discord Assistant"))
       .setTimestamp();
 
